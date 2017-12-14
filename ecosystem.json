@@ -1,0 +1,27 @@
+{
+  "apps" : [
+    {
+      "name"      : "LanLog",
+      "script"    : "./bin/www",
+      "instances"  : 2, // 启动了2个服务进程
+      "exec_mode"  : "cluster",
+      "env": {
+        "COMMON_VARIABLE": "true"
+      },
+      "env_production" : {
+        "NODE_ENV": "production"
+      },
+      "log_date_format": "YYYY-MM-DD HH:mm Z"
+    }
+  ],
+  "deploy" : {
+    "production" : {
+      "user" : "root",
+      "host" : "log.lovelytao.com",
+      "ref"  : "origin/master",
+      "repo" : "git@gitlab.lanlanlife.com:xiangpi/LanLog.git",
+      "path" : "/home/node_project/LanLog",
+      "post-deploy" : "pm2 startOrRestart ecosystem.json --env production"
+    }
+  }
+}

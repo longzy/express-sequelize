@@ -1,22 +1,45 @@
-var logRepo = require('../data/LogRepo');
+"use strict";
+
+const debug = require('debug')('lanlog:server');
+const logRepo = require('../data/LogRepo');
+
+const logType = [1,2]; // 1,url请求，2, 事件
+const whitelist = ['www.lanlanlife.com','lanlanlife.com'];
 
 /**
  * 懒懒日志写入
  * @param req
  * @param res
  */
-function addLog(req, res) {
+function addLog(req, res, next) {
 
-    var log = {};
-    var type = req.query['type'],
+    let log = {};
+    let type = Number(req.query['type']),
         uuid = req.query['uuid'],
         tag  = req.query['tag'],
         id   = req.query['id'],
         tkPrice = req.query['tkPrice'],
         price   = req.query['price'],
-        oPrice  = req.query['originPrice'];
+        oPrice  = req.query['originPrice'],
+        referer = req.headers.referer;
 
-    log.type = Number(type);
+    if(typeof referer === 'undefined'){
+        debug("referer: " + referer);
+        res.end();
+        return;
+    }
+
+    if(referer.indexOf("xman.lanlanlife.com") >= 0){
+        res.end();
+        return;
+    }
+
+    if(logType.indexOf(type) < 0 || uuid === ''){
+        res.end();
+        return;
+    }
+
+    log.type = type;
     log.uuid = uuid;
     log.ip = req.ip.match(/\d+\.\d+\.\d+\.\d+/)[0];
     log.isDeleted = 0;
@@ -25,7 +48,9 @@ function addLog(req, res) {
 
     if(log.type === 1){
         log.parameter0 = tag;
+        log.parameter1 = referer; //req.hostname;
     }
+
     // 事件
     if(log.type === 2){
         log.parameter0 = id;
@@ -37,7 +62,7 @@ function addLog(req, res) {
 
     logRepo.insertLog(log)
         .then(function (p) {
-            console.log('created.' + JSON.stringify(p));
+            // console.log('created.' + JSON.stringify(p));
             res.end();
         })
 }

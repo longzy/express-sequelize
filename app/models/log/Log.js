@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = function(sequelize, DataTypes){
 
     var Log = sequelize.define('Log', {
@@ -24,10 +26,10 @@ module.exports = function(sequelize, DataTypes){
         created: DataTypes.INTEGER
     },
     {
-        tableName: 'lanlan_logs1',
+        tableName: 'lan_logs',
         freezeTableName: false, // table的名字与model的名字相同
         timestamps: false // default true
     });
 
     return Log;
-}
+};

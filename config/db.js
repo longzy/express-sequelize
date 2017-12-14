@@ -1,7 +1,11 @@
+"use strict";
+
 var env = process.env.NODE_ENV || 'development';
+console.log("NODE_ENV: ", env);
 
 var config = {
-    development: {
+    // site_master
+    "development": {
         database: '', // 数据库
         username: '', // 用户名
         password: '', // 口令
@@ -15,12 +19,13 @@ var config = {
             }
         }
     },
-    production: {
-        database: 'test', // 数据库
-        username: 'www', // 用户名
-        password: 'www', // 口令
+    // site_cms
+    "production": {
+        database: '', // 数据库
+        username: '', // 用户名
+        password: '', // 口令
         options: {
-            host: 'localhost', // 主机名
+            host: '', // 主机名
             dialect: 'mysql',
             pool: {
                 max: 5,
